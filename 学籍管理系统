@@ -1,0 +1,582 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//文件名 D://stu_list 
+//printf("1 Math  2  Chinese  3 English  4 Computer  5  Nature   6 Philosophy   7 Physics  8 Chemistry\n"); 
+void STU();
+void TEA();
+void TEA1();
+void TEA2();
+void in();
+void search();
+void del();
+void total();
+void reset();
+void show();
+
+
+struct student{
+	   char  name[20];
+	   long  num;
+	   long  grade;
+	   char  lesson1[20];
+	   char  lesson2[20];
+	   char  lesson3[20];
+	   char  lesson4[20];
+	   char  lesson5[20];
+	   char  lesson6[20];
+	   int L1;
+	   int L2;
+	   int L3;
+	   int L4;
+	   int L5;
+	   int L6;
+	   int score1;
+	   int score2;
+	   int score3;
+	   int score4;
+	   int score5;
+	   int score6;  		
+			  }stu[10000];//该系统的容量为10000名学生 
+void TEA1()//科任老师入口 
+{
+	system("cls");
+	int m=0;//扫描
+	int NUM;//需要查找的学生的学号
+	int x;//任教科目选项
+	int i;//循环控制变量 
+	FILE *fp;
+	if(!(fp=fopen("D://stu_list","rb")))
+	printf("error!");
+	while(!feof(fp))//读入文件信息 
+	{
+    if(fread(&stu[m],sizeof(struct student),1,fp)==1)
+	m++;
+	}
+	
+	printf("1 Chinese  2 Math   3 English  4 Computer  5  Nature   6 Philosophy   7 Physics  8 Chemistry\n"); 
+	printf("请输入您所教学科代码: ");
+	scanf("%d",&x);
+	printf("这是您所教学生的列表:\n");
+	printf("姓名\t学号\t年级\t科目\t成绩\n");
+	for(i=0;i<m;i++)
+	{
+		if((stu[i].L1==x)||(stu[i].L2==x)||(stu[i].L3==x)||(stu[i].L4==x)||(stu[i].L5==x)||(stu[i].L6==x)) 
+		{
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[i].name,stu[i].num,stu[i].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[i].score1,stu[i].score2,stu[i].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[i].lesson4,stu[i].score4,stu[i].lesson5,stu[i].score5,stu[i].lesson6,stu[i].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+		}
+	}
+	fclose(fp); 
+}
+void TEA2()//教务处主任入口
+{
+	system("cls");
+	int z;//操作码
+	char ch[2]="y";//继续操作符 
+	printf(":_____________________________操作菜单______________________________________:\n");
+	printf(":                                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":      1.录入学生信息                                                       :\n");
+	printf(":      2.查找学生信息                                                       :\n");
+	printf(":      3.删除学生信息                                                       :\n");
+	printf(":      4.统计学生人数                                                       :\n");
+	printf(":      5.修改学生信息                                                       :\n");
+	printf(":                                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":___________________________________________________________________________:\n");
+
+	do
+	{
+	printf("请输入正确的操作符: ");
+	scanf("%d",&z);
+	switch(z)
+	{
+		case 1:in();break;
+		case 2:search();break;
+		case 3:del();break;
+		case 4:total();break;
+		case 5:reset();break;
+		default:
+			{
+			printf("\n是否继续操作:(y/n): ");
+			scanf("%s",&ch);
+			}
+	}
+	if(z==1||z==2||z==3||z==4||z==5)
+	break;
+	}while(strcmp(ch,"Y")!=0||strcmp(ch,"y")!=0);
+	} 
+			  
+			  
+void STU()//学生端入口 
+{
+	system("cls");
+	int NUM;
+	char ch[2];
+	FILE *fp;
+	int m;
+	//指针停留点 
+	if(!(fp=fopen("D://stu_list","rb")))
+	printf("error!");
+	else printf("同学你好 欢迎进入学籍管理系统 请输入你的学号以查看个人相关信息: ") ;
+	scanf("%ld",&NUM);
+	while(!feof(fp))
+	{
+		fread(&stu[m],sizeof(struct student),1,fp);
+		if (stu[m].num==NUM)
+		break; 
+		m++;
+	}
+	
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[m].name,stu[m].num,stu[m].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[m].score1,stu[m].score2,stu[m].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[m].lesson4,stu[m].score4,stu[m].lesson5,stu[m].score5,stu[m].lesson6,stu[m].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+	fclose(fp);
+}			  
+void TEA()//老师端入口 
+{
+	system("cls");
+	int z;//操作码 
+	char ch[2]="y";//继续操作符 
+	printf(":_____________________________操作菜单______________________________________:\n");
+	printf(":                                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":      1.科任老师入口                                                       :\n");
+	printf(":      2.教务处主任入口                                                     :\n");
+	printf(":                                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":___________________________________________________________________________:\n");
+	do
+	{
+	printf("请输入您的身份:\n(1/2): ");
+	scanf("%d",&z);
+	switch(z)
+	{
+		case 1:TEA1();break;
+		case 2:TEA2();break;
+		default:
+			{
+			printf("\n是否继续操作:(y/n): ");
+			scanf("%s",ch);
+			}
+	}
+	if(z==1||z==2)
+	break;
+	}while(strcmp(ch,"Y")!=0||strcmp(ch,"y")!=0);
+	
+}
+/////*////////显示学生信息//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void show()
+{
+	system("cls");
+	int m=0;
+	int i;
+	FILE *fp;
+	if(!(fp=fopen("D://stu_list","rb")))
+	printf("error!");
+	while(!feof(fp))//读入文件信息 
+	{
+	if(fread(&stu[m],sizeof(struct student),1,fp)==1)
+	m++;
+	}
+	printf("已经有%d名学生资料\n",m);
+	for (i=0;i<m;i++)
+	{
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[i].name,stu[i].num,stu[i].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[i].score1,stu[i].score2,stu[i].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[i].lesson4,stu[i].score4,stu[i].lesson5,stu[i].score5,stu[i].lesson6,stu[i].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+	}
+	fclose(fp);
+	
+} 
+ 
+
+
+///1//////////////录入学生信息////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void in()
+{
+	system("cls");
+	int i;
+	int m=0;//纪录条数 
+	int n;//录入人数 
+	char ch[2];
+	char name2[20];
+	FILE *fp;
+	if(!(fp=fopen("D://stu_list ","rb")))
+	printf("error!");
+	while(!feof(fp))
+	{
+		if(fread(&stu[m],sizeof(struct student),1,fp)==1)
+		m++;
+	}
+	
+	if(m==0)
+	{
+		printf("no record!\n"); 
+	}
+	fclose(fp);
+	if(!(fp=fopen("D://stu_list ","ab+")))
+	printf("error!");
+	printf("输入你想录入学生的个数: ");
+	scanf("%d",&n);
+	int sum;
+	sum=n+m;
+	for (i=m;i<sum;i++)
+	{
+
+		printf("\n第%d个学生的名字: ",i+1);
+		scanf("%s",stu[i].name);
+		printf("\n学号: ");
+		scanf("%ld",&stu[i].num);
+		printf("\n年级: ");
+		scanf("%ld",&stu[i].grade);
+		printf("\nChinese 成绩\t Math 成绩\t English 成绩: "); 
+		scanf("%d%d%d",&stu[i].score1,&stu[i].score2,&stu[i].score3);
+		printf("\n选修科目列表 4. Computer  5. Nature   6. Philosophy   7.Physics  8.Chemistry");
+		printf("\n选修科目1\t选修科目2\t选修科目3 : ");
+		scanf("%d%d%d",&stu[i].L4,&stu[i].L5,&stu[i].L6);
+				
+		stu[i].L1=1;
+		stu[i].L2=2;
+		stu[i].L3=3;
+		strcpy(stu[i].lesson1,"Chinese");
+		strcpy(stu[i].lesson2,"Math");
+		strcpy(stu[i].lesson3,"English");
+		
+		if (stu[i].L4==4)
+		strcpy(stu[i].lesson4,"Computer");
+		if (stu[i].L4==5)
+		strcpy(stu[i].lesson4,"Nature");
+		if (stu[i].L4==6)
+		strcpy(stu[i].lesson4,"Philosophy");
+		if (stu[i].L4==7)
+		strcpy(stu[i].lesson4,"Physics");
+		if (stu[i].L4==8)
+		strcpy(stu[i].lesson4,"Chemistry");
+		
+		if (stu[i].L5==4)
+		strcpy(stu[i].lesson5,"Computer");
+		if (stu[i].L5==5)
+		strcpy(stu[i].lesson5,"Nature");
+		if (stu[i].L5==6)
+		strcpy(stu[i].lesson5,"Philosophy");
+		if (stu[i].L5==7)
+		strcpy(stu[i].lesson5,"Physics");
+		if (stu[i].L5==8)
+		strcpy(stu[i].lesson5,"Chemistry");
+		
+		if (stu[i].L6==4)
+		strcpy(stu[i].lesson6,"Computer");
+		if (stu[i].L6==5)
+		strcpy(stu[i].lesson6,"Nature");
+		if (stu[i].L6==6)
+		strcpy(stu[i].lesson6,"Philosophy");
+		if (stu[i].L6==7)
+		strcpy(stu[i].lesson6,"Physics");
+		if (stu[i].L6==8)
+		strcpy(stu[i].lesson6,"Chemistry");
+		printf("\n%s成绩\t%s成绩\t%s成绩 : ",stu[i].lesson4,stu[i].lesson5,stu[i].lesson6);
+		scanf("%d%d%d",&stu[i].score4,&stu[i].score5,&stu[i].score6);
+		if(fwrite(&stu[i],sizeof(struct student),1,fp)!=1)
+		printf("can not save!");
+		else
+		printf("%s saved!",stu[i].name);
+	}
+	printf("\n录入完毕!");
+	printf("是否查看全部学生名单 (y/n)?\n");
+	scanf("%s",ch);
+	if(strcmp(ch,"y")==0||strcmp(ch,"Y")==0)
+	{
+	printf("这是所有学生名单\n");
+    show();	
+	}
+}
+/////////3///////////////////删除学生信息//////////////////////////////////////////////////////////////////////////////
+void del()
+{
+	system("cls");
+	FILE *fp;
+	int i=0;
+	int j;
+	int NUM;//要删除的学生学号 
+	int m=0;//统计数据行 
+	char ch[2];//继续操作符
+	char ch1[2];
+	if(!(fp=fopen("D://stu_list","rb")))
+	printf("error!");
+	else
+	printf("\n请输入要进行操作的学生学号: ");
+	scanf("%d",&NUM);
+	while(!feof(fp))
+	{
+	if(fread(&stu[m],sizeof(struct student),1,fp)==1)
+	m++;	
+	}
+	if(m==0)
+	{
+	printf("NO RECORD!\n");
+	return ;
+	}
+	rewind(fp);
+	while(!feof(fp))
+	{
+		fread(&stu[i],sizeof(struct student),1,fp);
+		if (stu[i].num==NUM)
+		break; 
+		i++;
+	}
+	fclose(fp);
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[i].name,stu[i].num,stu[i].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[i].score1,stu[i].score2,stu[i].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[i].lesson4,stu[i].score4,stu[i].lesson5,stu[i].score5,stu[i].lesson6,stu[i].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+	printf("\n是否要对此学生进行删除操作(y/n):");
+	scanf("%s",ch);	
+
+	if(strcmp(ch,"Y")==0||strcmp(ch,"y")==0)
+	for (j=i;j<m;j++)
+	{
+		stu[j]=stu[j+1];
+	}
+	m--;	
+	if(!(fp=fopen("D://stu_list","wb")))
+	printf("error!");
+	for(j=0;j<m;j++)
+	if (fwrite(&stu[j],sizeof(struct student),1,fp)!=1)
+	{
+		printf("can not save!\n");
+		getchar();
+	}
+	printf("\n删除成功！\n");
+	fclose(fp);
+	
+	printf("是否查看删除后的全部学生信息(y\n): ");
+	scanf("%s",ch1);
+	if(strcmp(ch1,"Y")==0||strcmp(ch1,"y")==0) 
+	show();
+	
+//查找学生信息////////////////////////////////////////////////////////////////////////////////////////////	
+} 
+void search()
+{
+	system("cls");
+	printf("这是所有的学生信息：\n");
+	show();
+	int NUM;
+	FILE *fp;
+	int m;
+	//指针停留点 
+	if(!(fp=fopen("D://stu_list","rb")))
+		printf("error!");
+	else 
+		printf(" 请输入学号以查看相关个人信息: ") ;
+	scanf("%ld",&NUM);
+	while(!feof(fp))
+	{
+		fread(&stu[m],sizeof(struct student),1,fp);
+		if (stu[m].num==NUM)
+		break; 
+		m++;
+	}
+	
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[m].name,stu[m].num,stu[m].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[m].score1,stu[m].score2,stu[m].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[m].lesson4,stu[m].score4,stu[m].lesson5,stu[m].score5,stu[m].lesson6,stu[m].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+	fclose(fp);
+	
+}
+/////4///////////统计学生人数/////////////////////////////////////////////////////////////////////////////////////////////////////
+void total()
+{
+	system("cls");
+	FILE *fp;
+	int m=0;
+	if(!(fp=fopen("D://stu_list","rb")))
+	printf("error!");
+	while(!feof(fp))
+	{
+	if	(fread(&stu[m],sizeof(struct student),1,fp)==1)
+	m++;	
+	}
+	printf("学生总数为%d",m);
+	return ;
+}
+//////5/////////////修改学生信息//////////////////////////////////////////////////////////////////////////////////////////////////////
+void reset()
+{
+	system("cls");
+	FILE* fp;
+	int NUM;
+	int m=0;
+	int i;
+	int z;//操作码
+	if(!(fp=fopen("D://stu_list","rb")) )
+	printf("error!\n");	
+	while(!feof(fp))
+	{	
+	if(fread(&stu[m],sizeof(struct student),1,fp)==1)
+	m++;
+	}
+	fclose(fp);	
+	printf("请输入要修改的学生的学号: ");
+	scanf("%d",&NUM);
+	for (i=0;i<m;i++)
+	{
+		if(NUM==stu[i].num)
+		break;
+	}
+	printf("已找到该名同学 资料如下:\n"); 
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[i].name,stu[i].num,stu[i].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[i].score1,stu[i].score2,stu[i].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[i].lesson4,stu[i].score4,stu[i].lesson5,stu[i].score5,stu[i].lesson6,stu[i].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+	printf("请输入要修改的数据:1.Chinese 成绩 2.Math 成绩 3.English 成绩 4.%s 成绩 5.%s 成绩 6.%s 成绩 7.选修课1及成绩 8.选修课2及成绩 9.选修课3及成绩",stu[i].lesson4,stu[i].lesson5,stu[i].lesson6);
+	printf("\n:");
+	scanf("%d",&z);
+	switch(z)
+	{
+		case 1:
+			printf(" 请输入更改后的%s成绩:",stu[i].lesson1);
+			scanf("%d",&stu[i].score1);
+		break;
+		case 2:
+			printf(" 请输入更改后的%s成绩:",stu[i].lesson2);
+			scanf("%d",&stu[i].score2);
+		break;
+		case 3:
+			printf(" 请输入更改后的%s成绩:",stu[i].lesson3);
+			scanf("%d",&stu[i].score3);
+		break;
+		case 4:
+			printf(" 请输入更改后的%s成绩:",stu[i].lesson4);
+			scanf("%d",&stu[i].score4);
+		break;
+		case 5:
+			printf(" 请输入更改后的%s成绩:",stu[i].lesson5);
+			scanf("%d",&stu[i].score5);
+		break;
+		case 6:
+			printf(" 请输入更改后的%s成绩:",stu[i].lesson6);
+			scanf("%d",&stu[i].score6);
+		break;
+		case 7:
+			printf("\n选修科目列表 4. Computer  5. Nature   6. Philosophy   7.Physics  8.Chemistry\n");
+			printf(" 请输入更改后的学科代码以及对应分数:");
+			scanf("%d%d",&stu[i].L4,&stu[i].score4);
+		if (stu[i].L4==4)
+			strcpy(stu[i].lesson4,"Computer");
+		if (stu[i].L4==5)
+			strcpy(stu[i].lesson4,"Nature");
+		if (stu[i].L4==6)
+			strcpy(stu[i].lesson4,"Philosophy");
+		if (stu[i].L4==7)
+			strcpy(stu[i].lesson4,"Physics");
+		if (stu[i].L4==8)
+			strcpy(stu[i].lesson4,"Chemistry");
+		break;
+		printf("\n选修科目列表 4. Computer  5. Nature   6. Philosophy   7.Physics  8.Chemistry\n");
+		printf(" 请输入更改后的学科代码以及对应分数:");
+		scanf("%d%d",&stu[i].L5,&stu[i].score5);
+		if (stu[i].L5==4)
+		strcpy(stu[i].lesson5,"Computer");
+		if (stu[i].L5==5)
+		strcpy(stu[i].lesson5,"Nature");
+		if (stu[i].L5==6)
+		strcpy(stu[i].lesson5,"Philosophy");
+		if (stu[i].L5==7)
+		strcpy(stu[i].lesson5,"Physics");
+		if (stu[i].L5==8)
+		strcpy(stu[i].lesson5,"Chemistry");
+		break;
+		printf("\n选修科目列表 4. Computer  5. Nature   6. Philosophy   7.Physics  8.Chemistry\n");
+		printf(" 请输入更改后的学科代码以及对应分数:");
+		scanf("%d%d",&stu[i].L6,&stu[i].score6);
+		if (stu[i].L6==4)
+		strcpy(stu[i].lesson6,"Computer");
+		if (stu[i].L6==5)
+		strcpy(stu[i].lesson6,"Nature");
+		if (stu[i].L6==6)
+		strcpy(stu[i].lesson6,"Philosophy");
+		if (stu[i].L6==7)
+		strcpy(stu[i].lesson6,"Physics");
+		if (stu[i].L6==8)
+		strcpy(stu[i].lesson6,"Chemistry");
+		break;
+		default :{
+				printf("你输入了错误的数字！");
+				getchar();
+				}
+	}
+	printf("修改完成 修改后信息如下:\n"); 
+	printf(":___________________________________________________________________________________________________________\n");
+	printf(": 姓名: %s\t学号: %ld\t年级: %ld\t\n",stu[i].name,stu[i].num,stu[i].grade);
+	printf(": score :Chinese: %d\tMath: %d\tEnglish: %d\n",stu[i].score1,stu[i].score2,stu[i].score3);
+	printf(": score :%s: %d\t%s: %d\t%s: %d\t\n",stu[i].lesson4,stu[i].score4,stu[i].lesson5,stu[i].score5,stu[i].lesson6,stu[i].score6);
+	printf(":___________________________________________________________________________________________________________\n");
+	if(!(fp=fopen("D://stu_list","wb"))) 
+	printf("error!\n");	
+	for (i=0;i<m;i++)
+	{
+	if(	fwrite(&stu[i],sizeof(struct student),1,fp)!=1)
+	printf("ERROR!");
+	}
+	printf("存档完毕！");
+	 
+	
+}
+	  
+void main()
+{
+	system("cls");
+	int z;//操作符 
+	char ch[2]="y";//继续判断符 
+	FILE *fp;
+	
+	if(!(fp=fopen("D://stu_list","rb")))
+	{
+	printf("打开文件失败 已经新建文件名为stu_list的文件\n");
+	fclose(fp);
+	fp=fopen("D://stu_list","wb+");
+	fclose(fp);
+	fp=fopen("D://stu_list","rb");
+	}
+	fclose(fp);
+	printf(":_____________________________操作菜单______________________________________:\n");
+	printf(":                                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":      1.老师入口                                                           :\n");
+	printf(":      2.学生入口                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":                                                                           :\n");
+	printf(":___________________________________________________________________________:\n");
+	
+	do
+	{
+	printf("请输入您的身份:\n(1/2): ");
+	scanf("%d",&z);
+	switch(z)
+	{
+		case 1:TEA();break;
+		case 2:STU();break;
+		default:
+			{
+			printf("\n是否继续操作:(y/n): ");
+			scanf("%s",ch);
+			}
+	}
+	if(z==1||z==2)
+	break;
+	}while(strcmp(ch,"Y")!=0||strcmp(ch,"y")!=0);
+}
